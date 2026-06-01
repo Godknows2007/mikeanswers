@@ -1,26 +1,59 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
 <head>
-  <title>Answers</title>
-  <style>
-    body {
-      font-family: Arial;
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Answers</title><style>
 
-    img {
-      max-width: 100%;
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
+body{
+    margin:0;
+    padding:15px;
+    background:#f2f2f2;
+    font-family:Arial,sans-serif;
+}
 
-<h2 id="title"></h2>
-<div id="content"></div>
-<img id="image">
+.container{
+    max-width:900px;
+    margin:auto;
+}
 
-<script type="module">
+.answer-box{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+#title{
+    color:#008751;
+    text-align:center;
+    font-size:32px;
+    margin-bottom:20px;
+}
+
+#content{
+    color:#222;
+    font-size:18px;
+    line-height:1.8;
+    white-space:pre-wrap;
+}
+
+#image{
+    width:100%;
+    margin-top:20px;
+    border-radius:10px;
+    display:none;
+}
+
+.exam-title{
+    color:#008751;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+</style></head><body><div class="container"><div class="answer-box"><h1 id="title">Loading...</h1><div id="content">
+Loading answers...
+</div><img id="image"></div></div><script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -34,37 +67,47 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Get subject and pin from URL
 const urlParams = new URLSearchParams(window.location.search);
 const subject = urlParams.get("subject");
 const pin = urlParams.get("pin");
 
-document.getElementById("title").innerText = subject;
+const title = document.getElementById("title");
+const content = document.getElementById("content");
+const image = document.getElementById("image");
+
+title.innerText = subject || "Answers";
 
 const docRef = doc(db, "answers", subject);
 const docSnap = await getDoc(docRef);
 
-if (docSnap.exists()) {
+if(docSnap.exists()){
 
-  const data = docSnap.data();
+    const data = docSnap.data();
 
-  if (data.pin === pin) {
+    if(data.pin === pin){
 
-    document.getElementById("content").innerHTML = data.content;
+        content.innerHTML = data.content;
 
-    if (data.image) {
-      document.getElementById("image").src = data.image;
+        if(data.image){
+
+            image.src = data.image;
+            image.style.display = "block";
+
+        }
+
+    }else{
+
+        content.innerHTML =
+        "<h2 style='color:red'>Wrong PIN</h2>";
+
     }
 
-  } else {
-    alert("Wrong PIN");
-  }
+}else{
 
-} else {
-  alert("Subject not found");
+    content.innerHTML =
+    "<h2 style='color:red'>Subject not found</h2>";
+
 }
 
-</script>
-
-</body>
+</script></body>
 </html>
