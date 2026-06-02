@@ -17,8 +17,10 @@
 <body>
 
 <h2 id="title"></h2>
+
 <div id="content"></div>
-<img id="image">
+
+<img src="https://i.ibb.co/wrRvFsyw/IMG-20260601-131537-837.jpg" width="100%">
 
 <script type="module">
 
@@ -34,7 +36,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Get subject and pin from URL
 const urlParams = new URLSearchParams(window.location.search);
 const subject = urlParams.get("subject");
 const pin = urlParams.get("pin");
@@ -51,10 +52,6 @@ if (docSnap.exists()) {
   if (data.pin === pin) {
 
     document.getElementById("content").innerHTML = data.content;
-
-    if (data.image) {
-      document.getElementById("image").src = data.image;
-    }
 
   } else {
     alert("Wrong PIN");
